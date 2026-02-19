@@ -1,4 +1,4 @@
-"""Training entrypoint."""
+﻿"""Training entrypoint."""
 
 from __future__ import annotations
 
@@ -38,6 +38,30 @@ def resolve_device(requested: str) -> torch.device:
         print("CUDA requested but unavailable, falling back to CPU.")
         return torch.device("cpu")
     return torch.device(requested)
+
+
+def build_scheduler(optimizer: torch.optim.Optimizer, train_cfg: Dict, epochs: int):
+    scheduler_cfg = train_cfg.get("scheduler")
+    if not scheduler_cfg:
+        return None
+
+    name = str(scheduler_cfg.get("name", "none")).lower().strip()
+    if name in {"", "none"}:
+        return None
+    if name == "cosine":
+        return torch.optim.lr_scheduler.CosineAnnealingLR(
+            optimizer,
+            T_max=int(scheduler_cfg.get("t_max", epochs)),
+            eta_min=float(scheduler_cfg.get("eta_min", 1e-5)),
+        )
+    if name == "step":
+        return torch.optim.lr_scheduler.StepLR(
+            optimizer,
+            step_size=int(scheduler_cfg.get("step_size", 5)),
+            gamma=float(scheduler_cfg.get("gamma", 0.5)),
+        )
+
+    raise ValueError(f"Unsupported scheduler name: {name}")
 
 
 def accuracy_from_logits(logits: torch.Tensor, targets: torch.Tensor) -> float:
@@ -122,11 +146,9 @@ def main() -> None:
     num_classes = int(config["data"].get("num_classes", len(classes)))
 
     model_cfg = config.get("model", {})
-    model = create_model(
-        model_cfg.get("name", "baseline"),
-        num_classes=num_classes,
-        dropout=model_cfg.get("dropout", 0.25),
-    ).to(device)
+    model_name = model_cfg.get("name", "baseline")
+    model_kwargs = {key: value for key, value in model_cfg.items() if key != "name"}
+    model = create_model(model_name, num_classes=num_classes, **model_kwargs).to(device)
 
     train_cfg = config.get("train", {})
     criterion = nn.CrossEntropyLoss()
@@ -137,6 +159,8 @@ def main() -> None:
     )
 
     epochs = int(train_cfg.get("epochs", 5))
+    scheduler = build_scheduler(optimizer, train_cfg, epochs)
+
     runs_dir = Path(config.get("paths", {}).get("runs_dir", "artifacts/runs"))
     checkpoints_dir = Path(config.get("paths", {}).get("checkpoints_dir", "checkpoints"))
     runs_dir.mkdir(parents=True, exist_ok=True)
@@ -154,21 +178,24 @@ def main() -> None:
     for epoch in range(1, epochs + 1):
         train_loss, train_acc = train_epoch(model, train_loader, criterion, optimizer, device)
         val_loss, val_acc = evaluate(model, val_loader, criterion, device)
-        lr = optimizer.param_groups[0]["lr"]
 
+        if scheduler is not None:
+            scheduler.step()
+
+        current_lr = float(optimizer.param_groups[0]["lr"])
         row = {
             "epoch": epoch,
             "train_loss": round(train_loss, 6),
             "train_acc": round(train_acc, 6),
             "val_loss": round(val_loss, 6),
             "val_acc": round(val_acc, 6),
-            "lr": round(float(lr), 8),
+            "lr": round(current_lr, 8),
         }
         history_rows.append(row)
         print(
             f"[{epoch}/{epochs}] "
             f"train_loss={train_loss:.4f} train_acc={train_acc:.4f} "
-            f"val_loss={val_loss:.4f} val_acc={val_acc:.4f}"
+            f"val_loss={val_loss:.4f} val_acc={val_acc:.4f} lr={current_lr:.7f}"
         )
 
         if val_acc > best_val_acc:
@@ -176,7 +203,7 @@ def main() -> None:
             torch.save(
                 {
                     "run_name": run_name,
-                    "model_name": model_cfg.get("name", "baseline"),
+                    "model_name": model_name,
                     "num_classes": num_classes,
                     "class_names": classes,
                     "best_val_acc": best_val_acc,
@@ -188,17 +215,21 @@ def main() -> None:
 
     duration = time.time() - started_at
     save_history(history_rows, history_path)
+
+    num_parameters = sum(param.numel() for param in model.parameters())
     summary = {
         "run_name": run_name,
-        "model_name": model_cfg.get("name", "baseline"),
+        "model_name": model_name,
         "device": str(device),
         "epochs": epochs,
+        "num_parameters": int(num_parameters),
         "best_val_acc": round(best_val_acc, 6),
         "training_seconds": round(duration, 3),
         "history_path": str(history_path),
         "checkpoint_path": str(checkpoint_path),
     }
     summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+
     print(f"Saved history to {history_path}")
     print(f"Saved summary to {summary_path}")
     print(f"Saved best checkpoint to {checkpoint_path}")
@@ -206,4 +237,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

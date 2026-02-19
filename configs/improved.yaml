@@ -1,0 +1,31 @@
+﻿run_name: improved
+seed: 42
+device: cuda
+num_workers: 2
+pin_memory: true
+
+data:
+  root: data
+  batch_size: 256
+  val_split: 0.1
+  num_classes: 10
+  train_augmentation: true
+  normalize_mean: [0.4914, 0.4822, 0.4465]
+  normalize_std: [0.2470, 0.2435, 0.2616]
+
+model:
+  name: improved
+  base_width: 64
+  dropout: 0.35
+
+train:
+  epochs: 6
+  lr: 0.001
+  weight_decay: 0.0001
+  scheduler:
+    name: cosine
+    eta_min: 0.00001
+
+paths:
+  runs_dir: artifacts/runs
+  checkpoints_dir: checkpoints
