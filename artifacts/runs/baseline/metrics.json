@@ -1,0 +1,11 @@
+{
+  "run_name": "baseline",
+  "model_name": "baseline",
+  "device": "cuda",
+  "epochs": 4,
+  "num_parameters": 620362,
+  "best_val_acc": 0.702976,
+  "training_seconds": 29.954,
+  "history_path": "artifacts\\runs\\baseline\\history.csv",
+  "checkpoint_path": "checkpoints\\baseline_best.pt"
+}

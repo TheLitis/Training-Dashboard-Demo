@@ -1,0 +1,9 @@
+{
+  "run_name": "improved",
+  "model_name": "improved",
+  "weights": "checkpoints\\improved_best.pt",
+  "test_loss": 0.513845,
+  "test_acc": 0.823047,
+  "curves_path": "artifacts\\plots\\improved_curves.png",
+  "confusion_path": "artifacts\\plots\\confusion_improved.png"
+}

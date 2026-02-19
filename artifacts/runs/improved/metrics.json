@@ -1,0 +1,11 @@
+{
+  "run_name": "improved",
+  "model_name": "improved",
+  "device": "cuda",
+  "epochs": 6,
+  "num_parameters": 1215562,
+  "best_val_acc": 0.823874,
+  "training_seconds": 53.679,
+  "history_path": "artifacts\\runs\\improved\\history.csv",
+  "checkpoint_path": "checkpoints\\improved_best.pt"
+}

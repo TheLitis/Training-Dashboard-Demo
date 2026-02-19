@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+data/
+artifacts/tmp/
+artifacts/runs/*_smoke/
+checkpoints/*_smoke_best.pt
+artifacts/sample_image.png

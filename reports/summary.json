@@ -1,0 +1,99 @@
+{
+  "generated_at": "2026-02-19T23:13:02.450597+00:00",
+  "runs": [
+    {
+      "run_name": "baseline",
+      "model_name": "baseline",
+      "epochs": 4,
+      "num_parameters": 620362,
+      "best_val_acc": 0.702976,
+      "test_acc": 0.704785,
+      "test_loss": 0.840364,
+      "training_seconds": 29.954,
+      "checkpoint_path": "checkpoints\\baseline_best.pt",
+      "checkpoint_size_mb": 2.372,
+      "history_path": "artifacts\\runs\\baseline\\history.csv",
+      "curves_path": "artifacts\\plots\\baseline_curves.png",
+      "confusion_path": "artifacts\\plots\\confusion_baseline.png"
+    },
+    {
+      "run_name": "baseline_smoke",
+      "model_name": "baseline",
+      "epochs": 1,
+      "num_parameters": 620362,
+      "best_val_acc": 0.207031,
+      "test_acc": null,
+      "test_loss": null,
+      "training_seconds": 13.107,
+      "checkpoint_path": "checkpoints\\baseline_smoke_best.pt",
+      "checkpoint_size_mb": 2.372,
+      "history_path": "artifacts\\runs\\baseline_smoke\\history.csv",
+      "curves_path": null,
+      "confusion_path": null
+    },
+    {
+      "run_name": "improved",
+      "model_name": "improved",
+      "epochs": 6,
+      "num_parameters": 1215562,
+      "best_val_acc": 0.823874,
+      "test_acc": 0.823047,
+      "test_loss": 0.513845,
+      "training_seconds": 53.679,
+      "checkpoint_path": "checkpoints\\improved_best.pt",
+      "checkpoint_size_mb": 4.66,
+      "history_path": "artifacts\\runs\\improved\\history.csv",
+      "curves_path": "artifacts\\plots\\improved_curves.png",
+      "confusion_path": "artifacts\\plots\\confusion_improved.png"
+    },
+    {
+      "run_name": "improved_smoke",
+      "model_name": "improved",
+      "epochs": 1,
+      "num_parameters": 1215562,
+      "best_val_acc": 0.199219,
+      "test_acc": null,
+      "test_loss": null,
+      "training_seconds": 13.684,
+      "checkpoint_path": "checkpoints\\improved_smoke_best.pt",
+      "checkpoint_size_mb": 4.661,
+      "history_path": "artifacts\\runs\\improved_smoke\\history.csv",
+      "curves_path": null,
+      "confusion_path": null
+    }
+  ],
+  "comparison": {
+    "baseline": {
+      "run_name": "baseline",
+      "model_name": "baseline",
+      "epochs": 4,
+      "num_parameters": 620362,
+      "best_val_acc": 0.702976,
+      "test_acc": 0.704785,
+      "test_loss": 0.840364,
+      "training_seconds": 29.954,
+      "checkpoint_path": "checkpoints\\baseline_best.pt",
+      "checkpoint_size_mb": 2.372,
+      "history_path": "artifacts\\runs\\baseline\\history.csv",
+      "curves_path": "artifacts\\plots\\baseline_curves.png",
+      "confusion_path": "artifacts\\plots\\confusion_baseline.png"
+    },
+    "improved": {
+      "run_name": "improved",
+      "model_name": "improved",
+      "epochs": 6,
+      "num_parameters": 1215562,
+      "best_val_acc": 0.823874,
+      "test_acc": 0.823047,
+      "test_loss": 0.513845,
+      "training_seconds": 53.679,
+      "checkpoint_path": "checkpoints\\improved_best.pt",
+      "checkpoint_size_mb": 4.66,
+      "history_path": "artifacts\\runs\\improved\\history.csv",
+      "curves_path": "artifacts\\plots\\improved_curves.png",
+      "confusion_path": "artifacts\\plots\\confusion_improved.png"
+    },
+    "delta_test_acc": 0.118262,
+    "delta_best_val_acc": 0.120898
+  }
+}

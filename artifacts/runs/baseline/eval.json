@@ -1,0 +1,9 @@
+{
+  "run_name": "baseline",
+  "model_name": "baseline",
+  "weights": "checkpoints\\baseline_best.pt",
+  "test_loss": 0.840364,
+  "test_acc": 0.704785,
+  "curves_path": "artifacts\\plots\\baseline_curves.png",
+  "confusion_path": "artifacts\\plots\\confusion_baseline.png"
+}
